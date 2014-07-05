@@ -1,6 +1,6 @@
 {
   "name": "glsl-deparser",
-  "version": "0.0.3",
+  "version": "1.0.0",
   "description": "through stream that translates glsl-parser AST nodes into working glsl code",
   "main": "index.js",
   "directories": {
