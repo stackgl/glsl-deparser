@@ -2,17 +2,23 @@
   "name": "glsl-deparser",
   "version": "1.0.0",
   "description": "through stream that translates glsl-parser AST nodes into working glsl code",
-  "main": "index.js",
+  "main": "stream.js",
   "directories": {
     "test": "test"
   },
   "dependencies": {
     "cssauron-glsl": "X.X.X",
-    "through": "~1.1.2"
+    "through2": "^0.6.3"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "glsl-parser": "git://github.com/stackgl/glsl-parser#2.0.0",
+    "glsl-tokenizer": "git://github.com/stackgl/glsl-tokenizer#2.0.0",
+    "new-from": "0.0.3",
+    "tap-spec": "^1.0.1",
+    "tape": "^3.0.2"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node test/index | tap-spec"
   },
   "repository": {
     "type": "git",

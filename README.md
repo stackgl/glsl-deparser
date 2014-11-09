@@ -1,46 +1,68 @@
 # glsl-deparser
 
-```javascript
+![](http://img.shields.io/badge/stability-stable-green.svg?style=flat)
+![](http://img.shields.io/npm/v/glsl-deparser.svg?style=flat)
+![](http://img.shields.io/npm/dm/glsl-deparser.svg?style=flat)
+![](http://img.shields.io/npm/l/glsl-deparser.svg?style=flat)
 
-var Path = require('path')
-
-var tokenizer = require('glsl-tokenizer')()
-  , parser = require('glsl-parser')
-  , deparser = require('glsl-deparser')
-
-process.stdin
-  .pipe(tokenizer)
-  .pipe(parser())
-  .pipe(deparser())             // <-- deparser!
-  .pipe(process.stdout)
-
-process.stdin.resume()
-
-```
-
-transform a stream of [glsl-parser](https://github.com/chrisdickinson/glsl-parser) AST nodes
+Transform the AST output from [glsl-parser](http://github.com/stackgl/glsl-parser)
 into strings.
 
-only operates on top-level statements emitted by `glsl-parser`, so the code it emits is executable
-by webgl.
+Only operates on top-level statements emitted by `glsl-parser`, so the code it
+emits is executable by WebGL.
 
-# api
+## API
 
-### deparser(whitespace_enabled=true, tab_text='  ')
+### stream = require('glsl-deparser/stream')(opts)
 
 Creates a `readable`/`writable` stream.
 
-If no args are provided, `whitespace` is assumed to be enabled, and the tab text will be `'  '`.
+The following options are available:
 
-If you pass `false` for the first arg, only syntactically significant whitespace will be emitted (it'll behave like a poor man's minifier).
+* `whitespace`: passing this as `false` will ensure that only syntactically
+  significatn whitespace will be emitted. (It'll behave like a poor man's
+  minifier). Defaults to `true`.
+* `indent`: assuming that `whitespace` is enabled, use the `indent` string
+  to indent the deparsed GLSL. Defaults to `'  '`.
 
-If you pass `true` and tab text, that tab text will be used to indent code.
+``` javascript
+var tokenizer = require('glsl-tokenizer/stream')
+var parser = require('glsl-parser/stream')
+var deparser = require('glsl-deparser/stream')
 
-# note
+process.stdin
+  .pipe(tokenizer())
+  .pipe(parser())
+  .pipe(deparser())
+  .pipe(process.stdout)
 
-the big caveat is that preprocessor if statements (`#if*`, `#endif`) won't work unless
-each branch produces a parseable tree.
+process.stdin.resume()
+```
 
-# license
+### string = require('glsl-deparser/direct')(ast, opts)
 
-MIT
+Takes an AST produced by [glsl-parser](http://github.com/stackgl/glsl-parser)
+and returns the deparsed GLSL. Accepts the same options listed above.
+
+``` javascript
+var tokenize = require('glsl-tokenizer/string')
+var parse = require('glsl-parser/direct')
+var deparse = require('glsl-deparse/direct')
+
+function reformat(inputSrc) {
+  var tokens = tokenize(inputSrc)
+  var ast = parse(tokens)
+  var outputSrc = deparse(ast)
+
+  return outputSrc
+}
+```
+
+## Note
+
+The big caveat is that preprocessor if statements (`#if*`, `#endif`) won't work
+unless each branch produces a parseable tree.
+
+## License
+
+MIT. See [LICENSE.md](LICENSE.md)
